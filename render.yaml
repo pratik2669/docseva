@@ -1,0 +1,65 @@
+# DocSeva – Render.com deployment blueprint
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: docseva
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /healthz/
+    autoDeploy: true
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        sync: false           # Set to your render domain in the dashboard
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false           # e.g. https://docseva.onrender.com
+      - key: PUBLIC_BASE_URL
+        sync: false           # e.g. https://docseva.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: docseva-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: docseva-redis
+          property: connectionString
+      - key: SECURE_SSL_REDIRECT
+        value: "True"
+      - key: USE_X_FORWARDED_HOST
+        value: "True"
+      - key: GUNICORN_WORKERS
+        value: "3"
+      - key: EMAIL_BACKEND
+        value: django.core.mail.backends.smtp.EmailBackend
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      - key: ADMINS
+        sync: false
+      - key: GOV_API_MODE
+        value: mock
+      - key: RATELIMIT_ENABLE
+        value: "True"
+
+  - type: redis
+    name: docseva-redis
+    plan: starter
+    ipAllowList: []
+
+databases:
+  - name: docseva-db
+    databaseName: docseva
+    user: docseva
+    plan: starter
