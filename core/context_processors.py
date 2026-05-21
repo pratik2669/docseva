@@ -6,7 +6,8 @@ def docseva_context(request):
     Global context injected into every template.
     Provides profile, role flags, and unread notification count.
     """
-    if not request.user.is_authenticated:
+    user = getattr(request, "user", None)
+    if user is None or not user.is_authenticated:
         return {
             "profile": None,
             "unread_notifications": 0,
