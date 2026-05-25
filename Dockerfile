@@ -45,7 +45,7 @@ COPY --from=builder /install /usr/local
 # Copy application source (excluding dev/build artefacts via .dockerignore)
 COPY --chown=docseva:docseva . .
 
-RUN chmod +x ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh \n    && mkdir -p /app/staticfiles /app/media \n    && chown -R docseva:docseva /app
 
 # Volumes for persistent data outside the container image
 VOLUME ["/app/media"]
