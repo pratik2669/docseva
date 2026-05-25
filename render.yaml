@@ -7,7 +7,7 @@ services:
     env: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    plan: starter
+    plan: free
     healthCheckPath: /healthz/
     autoDeploy: true
     envVars:
@@ -55,11 +55,11 @@ services:
 
   - type: redis
     name: docseva-redis
-    plan: starter
+    plan: free
     ipAllowList: []
 
 databases:
   - name: docseva-db
     databaseName: docseva
     user: docseva
-    plan: starter
+    plan: free
